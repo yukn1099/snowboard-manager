@@ -118,14 +118,16 @@ export default function NewPage() {
         <button
           onClick={saveLog}
           disabled={saving}
-          className="border rounded px-4 py-2"
+          className="w-full rounded bg-black text-white py-2 font-medium disabled:opacity-60"
         >
           {saving ? "保存中..." : "保存"}
         </button>
 
-        <a className="underline" href="/">
+        <a className="mt-2 block mx-auto text-sm text-gray-500 underline" href="/">
           ← 一覧へ
         </a>
+
+
       </div>
     </main>
   );
