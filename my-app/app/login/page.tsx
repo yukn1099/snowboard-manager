@@ -20,7 +20,7 @@ export default function LoginPage() {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
       },
     });
 
@@ -52,20 +52,27 @@ emailRedirectTo: `${window.location.origin}/auth/callback`,
           />
         </div>
 
+        <p className="text-sm text-gray-600">
+          メールに届いたリンクを開くとログインできます。
+        </p>
+
+
         <button
           onClick={sendMagicLink}
           disabled={sending}
-          className="border rounded px-4 py-2"
+          className="w-full rounded bg-black text-white py-2 font-medium disabled:opacity-60"
         >
           {sending ? "送信中..." : "ログインリンクを送る"}
         </button>
 
+
         <button
           onClick={() => router.push("/")}
-          className="underline text-left"
+          className="block mx-auto text-sm text-gray-500 underline"
         >
           ← 戻る
         </button>
+
       </div>
     </main>
   );
