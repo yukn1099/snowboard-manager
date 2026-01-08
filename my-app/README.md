@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Snowboard Manager
 
-## Getting Started
+Personal snowboard log & setting management app.
 
-First, run the development server:
+スノーボードの滑走ログとセッティング（バインディング角度・ハイバック）を  
+まとめて管理する個人開発アプリです。
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Demo
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+👉 https://snowboard-manager-ten.vercel.app/
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+※ ログイン後に各機能を利用できます。
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- スノーボード滑走ログの管理
+  - ゲレンデ
+  - 雪質
+  - 混雑度
+  - メモ
+- セッティング管理
+  - 前足 / 後足のバインディング角度
+  - ハイバックの倒し具合
+- セッティングテンプレート機能
+  - テンプレ作成
+  - 適用
+  - 編集 / 削除
+- ログ一覧のフィルタ機能
+- ユーザー認証（ログインユーザーごとにデータ分離）
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Next.js** (App Router)
+- **TypeScript**
+- **Supabase**
+  - Authentication
+  - Database
+  - Row Level Security (RLS)
+- **Vercel** (Hosting / Deployment)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Architecture / Notes
+
+- フロントエンドは Next.js（Client Components）で実装
+- Supabase Auth を利用したユーザー認証
+- データは RLS によりログインユーザー単位でアクセス制御
+- Vercel にデプロイし、外部からアクセス可能な形で運用
+
+---
+
+## Motivation
+
+自分自身がスノーボードに行く際、  
+「どのゲレンデで・どんな雪質で・どんなセッティングが合ったか」を  
+後から振り返れるようにしたいと思い、個人開発として作成しました。
+
+実際の利用を想定し、  
+- テンプレ機能  
+- フィルタ機能  
+- 運用しやすい UI  
+
+を重視して設計しています。
