@@ -1,62 +1,28 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 
-function getHashParams() {
-  const hash = window.location.hash.startsWith("#")
-    ? window.location.hash.slice(1)
-    : window.location.hash;
-
-  const params = new URLSearchParams(hash);
-  return {
-    access_token: params.get("access_token"),
-    refresh_token: params.get("refresh_token"),
-    type: params.get("type"),
-    error_description: params.get("error_description"),
-  };
-}
-
 export default function AuthCallbackPage() {
-  const router = useRouter();
   const [msg, setMsg] = useState("ログイン処理中...");
 
   useEffect(() => {
     const run = async () => {
       try {
-        const { access_token, refresh_token, error_description } = getHashParams();
-
-        if (error_description) {
-          throw new Error(error_description);
-        }
-
-        if (!access_token || !refresh_token) {
-          throw new Error("トークンがURLに見つかりませんでした");
-        }
-
-        // ✅ v2で確実に動く：セッションを保存
-        const { error } = await supabase.auth.setSession({
-          access_token,
-          refresh_token,
-        });
+        // PKCE（?code=...）をセッションに交換
+        const { error } = await supabase.auth.exchangeCodeForSession(
+          window.location.href
+        );
         if (error) throw error;
 
-        // hashを消して見た目も綺麗に（任意だけどおすすめ）
-        window.history.replaceState(null, "", window.location.pathname);
-
-        setMsg("ログイン完了。移動します...");
-        router.replace("/snowboard");
+        window.location.replace("/snowboard");
       } catch (e: any) {
         console.error(e);
-        setMsg(`ログインに失敗しました: ${e?.message ?? e}`);
-        // 失敗したらログインへ戻す
-        setTimeout(() => router.replace("/login"), 800);
+        setMsg(`ログイン失敗: ${e?.message ?? e}`);
       }
     };
-
     run();
-  }, [router]);
+  }, []);
 
   return (
     <main className="p-6 max-w-xl mx-auto">
