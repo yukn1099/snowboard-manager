@@ -3,17 +3,38 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
+function getHashParams() {
+  const hash = window.location.hash.startsWith("#")
+    ? window.location.hash.slice(1)
+    : window.location.hash;
+
+  const params = new URLSearchParams(hash);
+  return {
+    access_token: params.get("access_token"),
+    refresh_token: params.get("refresh_token"),
+    error_description: params.get("error_description"),
+  };
+}
+
 export default function AuthCallbackPage() {
   const [msg, setMsg] = useState("ログイン処理中...");
 
   useEffect(() => {
     const run = async () => {
       try {
-        // PKCE（?code=...）をセッションに交換
-        const { error } = await supabase.auth.exchangeCodeForSession(
-          window.location.href
-        );
+        const { access_token, refresh_token, error_description } = getHashParams();
+
+        if (error_description) throw new Error(error_description);
+        if (!access_token || !refresh_token) throw new Error("トークンがURLに見つかりませんでした");
+
+        const { error } = await supabase.auth.setSession({
+          access_token,
+          refresh_token,
+        });
         if (error) throw error;
+
+        // hashを消して見た目もスッキリ（任意だけどおすすめ）
+        window.history.replaceState(null, "", window.location.pathname);
 
         window.location.replace("/snowboard");
       } catch (e: any) {
@@ -21,6 +42,7 @@ export default function AuthCallbackPage() {
         setMsg(`ログイン失敗: ${e?.message ?? e}`);
       }
     };
+
     run();
   }, []);
 
